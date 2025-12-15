@@ -1,13 +1,24 @@
 
 
 let t = document.getElementById('tabled');
-let pre=document.getElementById('previous');
-let next=document.getElementById('next')
+let start = 0;
+let last = 5;
+let data = [];
 
-async function load() {
+
+
+
+async function loadData() {
     let res = await fetch("https://jsonplaceholder.typicode.com/posts");
-    let data = await res.json();
+     data = await res.json();
     console.log(res);
+    load();
+    
+}
+
+ function load() {
+    t.innerHTML="";
+    
 
     let table = document.createElement('table');
     table.border='1px'
@@ -19,7 +30,7 @@ async function load() {
         <th>Body</th>
     `;
     table.appendChild(header);
-    data.forEach(post => {
+    data.slice(start,last).forEach(post => {
         let row = document.createElement('tr');
         row.innerHTML = `
             <td>${post.id}</td>
@@ -32,4 +43,8 @@ async function load() {
     t.appendChild(table);
 }
 
-load();
+document.getElementById('next').addEventListener('click', () => { if (last < data.length) { start += 5; last += 5; load(); } });
+document.getElementById('prev').addEventListener('click', () => { if (start > 0) { start -= 5; last -= 5; load(); } });
+
+
+loadData();
